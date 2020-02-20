@@ -1,0 +1,58 @@
+
+#canvas {
+    background: #fff;
+    border: inset 4px;
+}
+
+
+#degree,
+#sin,
+#cos {
+    display: inline-block;
+    width: 10em;
+    text-align: right;
+}
+
+
+input[type="range"] {
+    width: 60vw;
+}
+
+
+#degree-range,
+#sin-range,
+#cos-range {
+    position: relative;
+}
+
+#degree-range::before {
+    content: "0";
+    position: absolute;
+    left: 0;
+    bottom: 1em;
+    transform: translate(-50%, 0);
+}
+#degree-range::after {
+    content: "360";
+    position: absolute;
+    right: 0;
+    bottom: 1em;
+    transform: translate(50%, 0);
+}
+
+#sin-range::before,
+#cos-range::before {
+    content: "-1";
+    position: absolute;
+    left: 0;
+    bottom: 1em;
+    transform: translate(-50%, 0);
+}
+#sin-range::after,
+#cos-range::after {
+    content: "1";
+    position: absolute;
+    right: 0;
+    bottom: 1em;
+    transform: translate(50%, 0);
+}

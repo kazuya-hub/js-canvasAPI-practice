@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas APIの練習</title>
+    <link rel="stylesheet" href="./CanvasAPI.css">
+</head>
+
+<body>
+    <table>
+        <tr>
+            <th>角度(θ)</th>
+            <td>
+                <span id="degree"></span>
+            </td>
+            <td>
+                <input type="range" id="degree-range" min="0" max="360" step="1">
+            </td>
+        </tr>
+        <tr>
+            <th>sinθ</th>
+            <td>
+                <span id="sin"></span>
+            </td>
+            <td>
+                <input type="range" id="sin-range" min="-1" max="1" step="any">
+            </td>
+        </tr>
+        <tr>
+            <th>cosθ</th>
+            <td>
+                <span id="cos"></span>
+            </td>
+            <td>
+                <input type="range" id="cos-range" min="-1" max="1" step="any">
+            </td>
+        </tr>
+    </table>
+    <div style="height: 32px;"></div>
+    <table>
+        <tr>
+            <th>
+                <label for="radius">半径(r)</label>
+            </th>
+            <td>
+                <input type="range" id="radius">
+            </td>
+        </tr>
+        <tr>
+            <th>
+                <label for="rotation-speed">回転速度</label>
+            </th>
+            <td>
+                <input type="range" id="rotation-speed" min="0" max="360" step="any">
+            </td>
+        </tr>
+    </table>
+    <button id="pause-button"></button>
+    <div style="margin-top: 32px; text-align: center;">
+        <canvas id="canvas"></canvas>
+    </div>
+    <script src="./CanvasAPI.js"></script>
+</body>
+
+</html>
