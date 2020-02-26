@@ -124,6 +124,11 @@
         const right_triangle_width = radius * cos;
         const right_triangle_height = radius * sin;
 
+        /** 点Pのキャンバス上のX座標 */
+        const p_x = canvas_center_x + right_triangle_width;
+        /** 点Pのキャンバス上のY座標 */
+        const p_y = canvas_center_y - right_triangle_height;
+
         // canvas外
         degree_display_Element.innerText = `${degree.toFixed(6)}°`;
         degree_range_display_Element.value = degree;
@@ -137,7 +142,7 @@
         // rの線
         ctx.beginPath();
         ctx.moveTo(canvas_center_x, canvas_center_y);
-        ctx.lineTo(canvas_center_x + right_triangle_width, canvas_center_y - right_triangle_height);
+        ctx.lineTo(p_x, p_y);
         ctx.closePath();
         ctx.stroke();
         // 破線
@@ -146,15 +151,15 @@
             // X軸から点Pまでの破線
             (() => {
                 ctx.beginPath();
-                ctx.moveTo(canvas_center_x + right_triangle_width, canvas_center_y);
-                ctx.lineTo(canvas_center_x + right_triangle_width, canvas_center_y - right_triangle_height);
+                ctx.moveTo(p_x, canvas_center_y);
+                ctx.lineTo(p_x, p_y);
                 ctx.stroke();
             })();
             // Y軸から点Pまでの破線
             (() => {
                 ctx.beginPath();
-                ctx.moveTo(canvas_center_x, canvas_center_y - right_triangle_height);
-                ctx.lineTo(canvas_center_x + right_triangle_width, canvas_center_y - right_triangle_height);
+                ctx.moveTo(canvas_center_x, p_y);
+                ctx.lineTo(p_x, p_y);
                 ctx.stroke();
             })();
             ctx.setLineDash([]);
@@ -201,21 +206,19 @@
         })();
         // 点P
         (() => {
-            const x = canvas_center_x + (radius) * Math.cos(radian);
-            const y = canvas_center_y - (radius) * Math.sin(radian);
             ctx.beginPath();
-            ctx.arc(x, y, 2.5, 0, 2 * Math.PI);
+            ctx.arc(p_x, p_y, 2.5, 0, 2 * Math.PI);
             ctx.fill();
         })();
         // Pの文字
         (() => {
-            const x = canvas_center_x + (radius + 20) * Math.cos(radian);
-            const y = canvas_center_y - (radius + 20) * Math.sin(radian);
+            const x = canvas_center_x + (radius + 24) * Math.cos(radian);
+            const y = canvas_center_y - (radius + 24) * Math.sin(radian);
             ctx.fillText('P(x, y)', x, y);
         })();
         // xの文字
         (() => {
-            const x = canvas_center_x + right_triangle_width;
+            const x = p_x;
             const y =
                 (right_triangle_height >= 0) ?
                     canvas_center_y + 8 :
@@ -228,7 +231,7 @@
                 (right_triangle_width >= 0) ?
                     canvas_center_x - 8 :
                     canvas_center_x + 8;
-            const y = canvas_center_y - right_triangle_height;
+            const y = p_y;
             ctx.fillText('y', x, y);
         })();
     }
