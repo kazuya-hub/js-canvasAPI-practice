@@ -37,7 +37,7 @@
             </td>
         </tr>
     </table>
-    <div style="height: 32px;"></div>
+    <div style="height: 8px;"></div>
     <table>
         <tr>
             <th>
@@ -52,12 +52,12 @@
                 <label for="rotation-speed">回転速度</label>
             </th>
             <td>
-                <input type="range" id="rotation-speed" min="0" max="360" step="any">
+                <input type="range" id="rotation-speed" min="-360" max="360" step="1">
             </td>
         </tr>
     </table>
     <button id="pause-button"></button>
-    <div style="margin-top: 32px; text-align: center;">
+    <div style="margin-top: 0px; text-align: center;">
         <canvas id="canvas"></canvas>
     </div>
     <script src="./CanvasAPI.js"></script>

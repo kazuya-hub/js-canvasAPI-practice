@@ -22,7 +22,8 @@ input[type="range"] {
 
 #degree-range,
 #sin-range,
-#cos-range {
+#cos-range,
+#rotation-speed {
     position: relative;
 }
 
@@ -31,14 +32,14 @@ input[type="range"] {
     position: absolute;
     left: 0;
     bottom: 1em;
-    transform: translate(-50%, 0);
+    transform: translateX(-50%);
 }
 #degree-range::after {
     content: "360";
     position: absolute;
     right: 0;
     bottom: 1em;
-    transform: translate(50%, 0);
+    transform: translateX(50%);
 }
 
 #sin-range::before,
@@ -47,7 +48,7 @@ input[type="range"] {
     position: absolute;
     left: 0;
     bottom: 1em;
-    transform: translate(-50%, 0);
+    transform: translateX(-50%);
 }
 #sin-range::after,
 #cos-range::after {
@@ -55,5 +56,13 @@ input[type="range"] {
     position: absolute;
     right: 0;
     bottom: 1em;
-    transform: translate(50%, 0);
+    transform: translateX(50%);
+}
+
+#rotation-speed::before {
+    content: "0";
+    position: absolute;
+    left: 50%;
+    bottom: 1em;
+    transform: translateX(-50%);
 }

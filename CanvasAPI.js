@@ -2,13 +2,14 @@
 
 (async () => {
     const CANVAS_WIDTH = 640;
-    const CANVAS_HEIGHT = 480;
-    const DEFAULT_RADIUS = 200;
+    const CANVAS_HEIGHT = 640;
+    const DEFAULT_RADIUS = 240;
 
     const canvas_center_x = CANVAS_WIDTH / 2;
     const canvas_center_y = CANVAS_HEIGHT / 2;
 
 
+    /** 一秒間にループを行う回数 */
     const FPS = 60;
     /** 回転の速さ 度/秒 */
     const DEFAULT_ROTATION_SPEED = 60;
@@ -31,6 +32,7 @@
     const cos_display_Element = document.getElementById('cos');
 
 
+    // 3時を0°とした反時計回りの角度
     let degree = 0;
 
     /** @type {HTMLInputElement} */
@@ -41,37 +43,44 @@
     const cos_range_display_Element = document.getElementById('cos-range');
 
     /**
-     * 角度を変更し、update()を呼び出す
+     * 角度をセットする 元の角度から変更された場合はupdateCanvasを呼び出す
      * @param {number} degree_to_set 
      */
     function modifyDegree(degree_to_set) {
+        if (degree === degree_to_set) {
+            return;
+        }
         degree = degree_to_set;
-        update();
+        updateCanvas();
     }
     degree_range_display_Element.addEventListener('input', event => {
         modifyDegree(Number(degree_range_display_Element.value) || 0);
     });
     sin_range_display_Element.addEventListener('input', event => {
         const radian = Math.asin(Number(sin_range_display_Element.value));
-        const degree_to_set = radian * 180 / Math.PI;
+        const degree_to_set = ((radian * 180 / Math.PI) + 360) % 360;
         modifyDegree(degree_to_set);
     });
     cos_range_display_Element.addEventListener('input', event => {
         const radian = Math.acos(Number(cos_range_display_Element.value));
-        const degree_to_set = radian * 180 / Math.PI;
+        const degree_to_set = ((radian * 180 / Math.PI) + 360) % 360;
         modifyDegree(degree_to_set);
     });
+
 
     /** @type {HTMLInputElement} input[type="range"] */
     const radius_input_Element = document.getElementById('radius');
     radius_input_Element.min = 0;
     radius_input_Element.max = Math.max(CANVAS_WIDTH, CANVAS_HEIGHT);
+
     let radius = radius_input_Element.value = DEFAULT_RADIUS;
     radius_input_Element.addEventListener('input', event => {
         radius = Number(radius_input_Element.value) || 0;
         updateOffScreenCanvas();
     });
 
+
+    /** @type {HTMLInputElement} input[type="range"] */
     const rotation_speed_input_Element = document.getElementById('rotation-speed');
     let rotation_speed = rotation_speed_input_Element.value = DEFAULT_ROTATION_SPEED;
     let step = 0;
@@ -83,6 +92,7 @@
         rotation_speed = Number(rotation_speed_input_Element.value) || 0;
         modifyStep();
     });
+
 
     /** @type {HTMLButtonElement} */
     const pause_button = document.getElementById('pause-button');
@@ -112,8 +122,10 @@
 
 
 
-
-    function update() {
+    /**
+     * キャンバスを描き直す
+     */
+    function updateCanvas() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         const radian = degree / 180 * Math.PI;
@@ -130,7 +142,7 @@
         const p_y = canvas_center_y - right_triangle_height;
 
         // canvas外
-        degree_display_Element.innerText = `${degree.toFixed(6)}°`;
+        degree_display_Element.innerText = `${degree.toFixed(1)}°`;
         degree_range_display_Element.value = degree;
         sin_display_Element.innerText = sin.toFixed(12);
         sin_range_display_Element.value = sin;
@@ -236,18 +248,78 @@
         })();
     }
     radius_input_Element.addEventListener('input', event => {
-        update();
+        updateCanvas();
     });
+
+
+    /**
+     * 角度をマウスの方向に変更する
+     * @param {MouseEvent} event 
+     */
+    function manualDegreeModify(event) {
+        /** キャンバス内でのマウスのX座標 */
+        const mouse_x_in_canvas = event.offsetX;
+        /** キャンバス内でのマウスのY座標 */
+        const mouse_y_in_canvas = event.offsetY;
+
+        /** 円の中心を原点としたマウスのX座標(右が正) */
+        const mouse_x_in_circle = mouse_x_in_canvas - canvas_center_x;
+        /** 円の中心を原点としたマウスのY座標(上が正) */
+        const mouse_y_in_circle = -(mouse_y_in_canvas - canvas_center_y);
+
+        // /** 円の中心からマウスまでの距離 */
+        // const radius = Math.sqrt((mouse_x_in_circle ** 2) + (mouse_y_in_circle ** 2));
+
+        // const sin = mouse_y_in_circle / radius;
+        // const cos = mouse_x_in_circle / radius;
+        // const tan = mouse_y_in_circle / mouse_x_in_circle;
+
+        // const radian_asin = Math.asin(sin);
+        // const radian_acos = Math.acos(cos);
+        // const radian_atan = Math.atan(tan);
+        
+        const radian_atan2 = Math.atan2(mouse_y_in_circle, mouse_x_in_circle);
+
+        const degree =
+            // (radian_asin * 180 / Math.PI + 360) % 360;
+            // (radian_acos * 180 / Math.PI + 360) % 360;
+            // (radian_atan * 180 / Math.PI + 360) % 360;
+            (radian_atan2 * 180 / Math.PI + 360) % 360;
+        modifyDegree(degree);
+    }
+
+    let is_dragging = false;
+    canvas.onmousedown = event => {
+        is_dragging = true;
+        manualDegreeModify(event);
+    };
+    canvas.onmouseup = event => {
+        is_dragging = false;
+    }
+    canvas.onmousemove = event => {
+        if (is_dragging === false) {
+            return;
+        }
+
+        manualDegreeModify(event);
+    }
+
 
     // ループに使うsetIntervalのid ループ中では無い場合はnull
     let loop_intervalId = null;
+
     function startLoop() {
         loop_intervalId = setInterval(() => {
+            if (is_dragging === true) {
+                return;
+            }
+
             // console.log(degree)
-            modifyDegree((degree + step) % 360);
+            modifyDegree((degree + step + 360) % 360);
         }, 1000 / FPS);
         pause_button.innerText = '一時停止';
     }
+
     function stopLoop() {
         if (loop_intervalId === null) {
             return;
